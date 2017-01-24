@@ -1,18 +1,7 @@
 // Log to sumo logic directly
 
 var _ = require('underscore');
-
-function safeToString(obj) {
-  try {
-    return JSON.stringify(obj);
-  } catch (err) {
-    try {
-      return JSON.stringify(String(obj));
-    } catch (err) {
-      return JSON.stringify('error serializing log line');
-    }
-  }
-}
+var safeStringify = require('./safe-stringify');
 
 module.exports = function SumoLogger(collectorCode, opts) {
   var me = this;
@@ -66,21 +55,18 @@ module.exports = function SumoLogger(collectorCode, opts) {
   var unsynced = [];
 
   function append(lvl, args) {
-    var stringifyArgs = _.map(args, function(a) {
-      return safeToString(a);
-    });
+    var logentry = {level: lvl}
 
     // In the common case of a single log value, pull it out. It's easier in sumo
     // logic to traverse known object graphs without arrays, especially at the
     // top level
-    var data = ''
-    if (stringifyArgs.length == 1) {
-      data = stringifyArgs[0];
+    if (args.length == 1) {
+      logentry.data = args[0];
     } else {
-      data = '[' + stringifyArgs.join(', ') + ']';
+      logentry.data = args;
     }
 
-    unsynced.push('{"level":' + JSON.stringify(lvl) + ',"data":' + data + '}');
+    unsynced.push(safeStringify(logentry));
   }
 
   // I want arguments to be treated as an object (helps indexing into the correct fields on sumo logic)

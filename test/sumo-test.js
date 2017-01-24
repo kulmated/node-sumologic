@@ -140,34 +140,6 @@ describe('Sumo Logic Collector', function() {
     runSync();
   });
 
-  it("Exercise safeToString", function () {
-    var expectedBody = ''
-    var sumologic = new SumoLogger(function(opts, cb) {
-      expect(opts.body).to.equal(expectedBody);
-      cb(undefined, {status: 200});
-    });
-
-    function checkObject(line, expected) {
-      expectedBody = expected || JSON.stringify({level: 'INFO', data: line});
-      sumologic.log(line);
-      clock.tick(1000);
-    }
-
-    checkObject("msg 1");
-    checkObject({});
-
-    // circular refs will confuse JSON.stringify, fallback to toString
-    x = {};
-    x.y = x;
-    checkObject(x, '{"level":"INFO","data":"[object Object]"}');
-
-    // Finally, check errors in toString are handled
-    function TestObj() { }
-    TestObj.prototype.toJSON = function() { throw new Error(); }
-    TestObj.prototype.toString = function() { throw new Error(); }
-    checkObject(new TestObj(), '{"level":"INFO","data":"error serializing log line"}');
-  });
-
   it("Ensure log lines are valid json", function () {
     var expected = {};
     var sumologic = newTestSumoLogger(function(opts, cb) {
