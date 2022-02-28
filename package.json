@@ -1,6 +1,6 @@
 {
   "name": "sumologic",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Sync Application logs to sumo logic directly via their http API",
   "main": "sumo.js",
   "scripts": {
@@ -23,12 +23,12 @@
   },
   "homepage": "https://github.com/helix-collective/node-sumologic#readme",
   "dependencies": {
-    "request": "2.79.0",
-    "underscore": "1.8.3"
+    "request": "2.88.2",
+    "underscore": "1.13.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.5.3",
-    "sinon": "^1.17.5"
+    "chai": "^4.3.6",
+    "mocha": "^9.2.1",
+    "sinon": "^13.0.1"
   }
 }
